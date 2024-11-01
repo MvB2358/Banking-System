@@ -1,7 +1,7 @@
 class FixedDeposit{
 	private int fdID = 0;
 	private static nextID = 1;
-	private double principalAmount
+	private double principalAmount;
 	private int tenure;
 	private double interest;
 	private double penalty;
