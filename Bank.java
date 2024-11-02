@@ -30,7 +30,9 @@ public class Bank {
         System.out.println("Bank ID: " + bank_id);
         System.out.println("Branches linked to this bank:");
         for (Branch branch : branches) {
-            System.out.println(branch.getBranchName());
+            System.out.println();
+            branch.generateBranchReport();
+            System.out.println();
         }
     }
 }
