@@ -33,14 +33,29 @@ public class LoanApplication {
         System.out.println("Application Date: " + applicationDate);
         System.out.println("Approval Date: " + (approvalDate != null ? approvalDate : "Not Approved"));
         System.out.println("Status: " + loanStatus);
+        System.out.println("Verified: " + (verified ? "Yes" : "No"));
+        System.out.println("Verified By: " + (verifiedBy != null ? verifiedBy.getEmployeeName() : "Not Verified"));
     }
 
     public void updateLoanStatus(String status) {
         this.loanStatus = status;
+        if ("Approved".equalsIgnoreCase(status)) {
+            this.approvalDate = LocalDate.now();
+        } else {
+            this.approvalDate = null;
+        }
     }
 
-    public void updateVerification(boolean bool, Employee employee) {
+    public void updateVerification(boolean bool) {
         this.verified = bool;
-        this.verifiedBy = employee;
+        if (!bool) {
+            this.verifiedBy = null;
+        }
+    }
+
+    public void setVerifiedBy(Employee employee) {
+        if (verified) {
+            this.verifiedBy = employee;
+        }
     }
 }
