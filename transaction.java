@@ -1,4 +1,3 @@
-
 import java.time.LocalDateTime;
 
 public class Transaction {
@@ -12,49 +11,44 @@ public class Transaction {
     private double transactionFee;
     private String failureReason;
 
-    public Transaction(String transactionId, Account sourceAccount, Account destinationAccount,
-                       String transactionType, double amount) {
+    public Transaction(String transactionId, Account sourceAccount, Account destinationAccount, String transactionType, double amount, LocalDateTime transactionDate) {
         this.transactionId = transactionId;
         this.sourceAccount = sourceAccount;
         this.destinationAccount = destinationAccount;
         this.transactionType = transactionType;
         this.amount = amount;
-        this.transactionDate = LocalDateTime.now();
+        this.transactionDate = transactionDate;
         this.transactionStatus = "Pending";
-        this.transactionFee = calculateTransactionFees();
     }
 
     public void getTransactionDetails() {
         System.out.println("Transaction ID: " + transactionId);
         System.out.println("Source Account: " + sourceAccount.getAccountId());
         System.out.println("Destination Account: " + destinationAccount.getAccountId());
-        System.out.println("Transaction Type: " + transactionType);
+        System.out.println("Type: " + transactionType);
         System.out.println("Amount: " + amount);
-        System.out.println("Transaction Date: " + transactionDate);
-        System.out.println("Transaction Status: " + transactionStatus);
-        System.out.println("Transaction Fee: " + transactionFee);
-        if (transactionStatus.equals("Failed")) {
-            System.out.println("Failure Reason: " + failureReason);
-        }
+        System.out.println("Date: " + transactionDate);
+        System.out.println("Status: " + transactionStatus);
+        System.out.println("Fee: " + transactionFee);
+        System.out.println("Failure Reason: " + (failureReason != null ? failureReason : "None"));
     }
 
     public double calculateTransactionFees() {
-        double fee = 0;
         switch (transactionType) {
-            case "Transfer":
-                fee = amount * 0.02;
+            case "Domestic":
+                transactionFee = amount * 0.01; // 1% fee for domestic transactions
                 break;
-            case "Deposit":
-                fee = 1.00;
+            case "International":
+                transactionFee = amount * 0.02; // 2% fee for international transactions
                 break;
-            case "Withdrawal":
-                fee = amount * 0.015;
+            case "Business":
+                transactionFee = amount * 0.015; // 1.5% fee for business transactions
                 break;
             default:
-                fee = 0;
+                transactionFee = amount * 0.005; 
                 break;
         }
-        return fee;
+        return transactionFee;
     }
 
     public String getTransactionType() {
@@ -69,8 +63,15 @@ public class Transaction {
         return destinationAccount;
     }
 
-    public void setTransactionStatus(String status, String failureReason) {
-        this.transactionStatus = status;
-        this.failureReason = (status.equals("Failed")) ? failureReason : null;
+    public void processTransaction() {
+        transactionFee = calculateTransactionFees();
+        if (sourceAccount.getBalance() >= (amount + transactionFee)) {
+            sourceAccount.debit(amount + transactionFee);
+            destinationAccount.credit(amount);
+            transactionStatus = "Completed";
+        } else {
+            transactionStatus = "Failed";
+            failureReason = "Insufficient Funds";
+        }
     }
 }
