@@ -5,6 +5,7 @@ public class SavingsAccount extends Account {
     private int maxNoTransactions;
     private double charge;
     private boolean isViolating;
+    private int currentTransactions;
 
     public SavingsAccount(double minBalance, double transactionLimit, int maxNoTransactions) {
         super(); // Call to Account's constructor if required
@@ -40,14 +41,14 @@ public class SavingsAccount extends Account {
     }
 
     public void handleTransaction(double amount){
-        // Example logic for transaction limits
+        // Include CurrentTransactions to check less than limit and do super.transaction()
         if(amount > transactionLimit){
             System.out.println("Transaction limit exceeded.");
             isViolating = true;
         }
-        else{
-            System.out.println("Transaction successful.");
-        }
+        
+            System.out.println("Transaction successful.");   
+        
     }
 
     public void imposeFine(){
