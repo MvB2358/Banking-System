@@ -35,17 +35,17 @@ public class Transaction {
 
     public double calculateTransactionFees() {
         switch (transactionType) {
-            case "Domestic":
-                transactionFee = amount * 0.01; // 1% fee for domestic transactions
+            case "Transfer":
+                transactionFee = amount * 0.005;
                 break;
-            case "International":
-                transactionFee = amount * 0.02; // 2% fee for international transactions
+            case "Deposit":
+                transactionFee = 0.0;
                 break;
-            case "Business":
-                transactionFee = amount * 0.015; // 1.5% fee for business transactions
+            case "Withdraw":
+                transactionFee = amount * 0.01;
                 break;
             default:
-                transactionFee = amount * 0.005; 
+                transactionFee = 0.0;
                 break;
         }
         return transactionFee;
@@ -63,15 +63,28 @@ public class Transaction {
         return destinationAccount;
     }
 
-    public void processTransaction() {
+    public boolean processTransaction() {
         transactionFee = calculateTransactionFees();
+        boolean result = false;
+
         if (sourceAccount.getBalance() >= (amount + transactionFee)) {
-            sourceAccount.debit(amount + transactionFee);
-            destinationAccount.credit(amount);
-            transactionStatus = "Completed";
+            sourceAccount.withdraw(amount + transactionFee);
+            result = true;
+            transactionStatus = "Withdrawn";
+
+            if (destinationAccount != null) {
+                destinationAccount.deposit(amount);
+                transactionStatus = "Completed";
+            } else {
+                transactionStatus = "Failed";
+                failureReason = "Destination Account Not Specified";
+                result = false;
+            }
         } else {
             transactionStatus = "Failed";
             failureReason = "Insufficient Funds";
         }
+
+        return result;
     }
 }
