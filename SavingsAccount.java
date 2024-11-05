@@ -27,7 +27,6 @@ public class SavingsAccount extends Account {
         }
         else{
             System.out.println("Insufficient balance to meet minimum balance requirements.");
-            imposeFine();
         }
     }
 
