@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.regex.*;
 
 public class Employee {
     private String employeeId;
@@ -12,6 +13,8 @@ public class Employee {
 
     private Bank bank;
     private Branch branch;
+
+    private int card_number = 1;
 
     public Employee(String employeeId, String employeeName, Bank bank, Branch branch, String designation,
             String department, double salary, int phoneNumber, String email, Date joiningDate) {
@@ -43,11 +46,27 @@ public class Employee {
     }
 
     public void editEmail(String email) {
-        this.email = email;
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        
+        if (email != null && !email.isEmpty()) {
+            if(email.matches(emailRegex)) {
+                this.email = email;
+                System.out.println("Email updated successfully!");
+            } else {
+                System.out.println("Enter a valid email address");
+            }
+        } else {
+            System.out.println("Email was not updated. Please try again");
+        }
     }
 
     public void updateSalary(double salary) {
-        this.salary = salary;
+        if (Double.isFinite(salary) && salary >= 0) {
+            this.salary = salary;
+            System.out.println("Salary updated successfully!");
+        } else {
+            System.out.println("Invalid salary. Salary must be a non-negative number.");
+        }
     }
 
     public void verifyLoan(Loan loanApplication) {
@@ -56,12 +75,18 @@ public class Employee {
     }
 
     public void createCreditCard() {
-        String creditCardNumber = "4131 1234 5674 1579";
+        String creditCardNumber = String.format("%04d %04d %04d %04d", (card_number / 100000000) % 10000, (card_number / 10000) % 10000, (card_number / 100) % 10000, card_number % 10000);
+        card_number++;
+        System.out.println("Generated Credit Card Number: " + creditCardNumber);
     }
 
     public void openAccount(Customer customer, String type) {
-        Account newAccount = new Account(customer, type);
-        System.out.println("Account opened for Customer: " + customer.getName());
+        if (type.equals("Savings")) {
+            // Savings account
+        } else {
+            // Current account
+        }
+        System.out.println(type + "Account opened for Customer: " + customer.getName());
     }
 
     public void closeAccount(Account account) {
