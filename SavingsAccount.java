@@ -21,7 +21,8 @@ public class SavingsAccount extends Account {
         return balance * (interestRate / 100);
     }
 
-    public void withdraw(double amount){
+    public boolean withdraw(double amount){
+        // create and include a boolean variable
         System.out.println("You have requested to withdraw: " + amount);
         if (balance - amount >= minBalance) {
             balance -= amount;
@@ -31,7 +32,8 @@ public class SavingsAccount extends Account {
         }
     }
 
-    public void deposit(double amount){
+    public boolean deposit(double amount){
+        // create and include a boolean variable
         System.out.println("You have deposited: " + amount);
         balance += amount;
     }
