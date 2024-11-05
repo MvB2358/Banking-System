@@ -43,7 +43,6 @@ public class SavingsAccount extends Account {
         // Example logic for transaction limits
         if(amount > transactionLimit){
             System.out.println("Transaction limit exceeded.");
-            imposeFine();
             isViolating = true;
         }
         else{
