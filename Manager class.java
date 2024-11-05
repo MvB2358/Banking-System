@@ -7,10 +7,15 @@ public class Manager extends Employee {
     }
 
     public void approveLoan(LoanApplication application) {
-        if (application != null && !application.isApproved()) {
-            application.updateLoanStatus("Approved");
-            application.setVerifiedBy(this);
-            System.out.println("Loan application for " + application.getApplicantName() + " approved by " + getEmployeeName());
+        if (application != null && !application.getLoanStatus().equalsIgnoreCase("Approved")) {
+            if (application.isVerified()) {
+                application.updateLoanStatus("Approved");
+                application.setVerifiedBy(this);
+                System.out.println("Loan application for " + application.getCustomer().getCustomerName() + " approved by " + getEmployeeName());
+            } else {
+                application.updateLoanStatus("Rejected");
+                System.out.println("Loan application for " + application.getCustomer().getCustomerName() + " rejected by " + getEmployeeName() + " as it is not verified.");
+            }
         } else {
             System.out.println("Loan application is already approved or null.");
         }
