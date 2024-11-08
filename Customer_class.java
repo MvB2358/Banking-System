@@ -1,38 +1,38 @@
 import java.util.ArrayList;
 import java.util.List;
 
-class Customer{
+class Customer {
     private String CIF;
     private String name;
     private String address;
     private int phone_no;
-    private List<Account> accounts;  
-    private List<Card> cards;        
-    
-    public Customer(String CIF, String name, String address, int phone_no){
+    private List<Account> accounts;
+    private List<Card> cards;
+    private List<LoanApplication> loanApplications;
+    private List<LoanAccount> loanAccounts;
+
+    public Customer(String CIF, String name, String address, int phone_no) {
         this.CIF = CIF;
         this.name = name;
         this.address = address;
         this.phone_no = phone_no;
-        this.accounts = new ArrayList<>();  
-        this.cards = new ArrayList<>();     
+        this.accounts = new ArrayList<>();
+        this.cards = new ArrayList<>();
+        this.loanApplications = new ArrayList<>();
+        this.loanAccounts = new ArrayList<>();
     }
 
-    public void addAccount(Account account){
-        if (account != null){
-            accounts.add(account);  
+    public void addAccount(Account account) {
+        if (account != null) {
+            accounts.add(account);
             System.out.println("Account added: " + account.getAccountNumber());
-        } 
-		else{
+        } else {
             System.out.println("Invalid account!");
         }
     }
 
-
-    public void closeAccount(Account account){
-        int index = accounts.indexOf(account);  
-        if (index != -1) {  
-            accounts.set(index, null);
+    public void closeAccount(Account account) {
+        if (accounts.remove(account)) {
             System.out.println("Account closed: " + account.getAccountNumber());
         } else {
             System.out.println("Account not found!");
@@ -43,17 +43,22 @@ class Customer{
         return accounts.toArray(new Account[0]);
     }
 
-    public void addCard(Card card) {
-        if (card != null) {
-            cards.add(card);  
-            System.out.println("Card added: " + card.getCardNumber());
+    public void addDebitCard(Account account) {
+        if (account != null && account instanceof DebitAccount) {
+            cards.add(new DebitCard(account));
+            System.out.println("Debit Card added for account: " + account.getAccountNumber());
         } else {
-            System.out.println("Invalid card!");
+            System.out.println("Invalid debit card account!");
         }
     }
 
+    public void addCreditCard() {
+        cards.add(new CreditCard());
+        System.out.println("Credit Card added.");
+    }
+
     public void removeCard(Card card) {
-        if (cards.remove(card)) {  
+        if (cards.remove(card)) {
             System.out.println("Card removed: " + card.getCardNumber());
         } else {
             System.out.println("Card not found!");
@@ -61,7 +66,25 @@ class Customer{
     }
 
     public Card[] getCardDetails() {
-        return cards.toArray(new Card[0]);  
+        return cards.toArray(new Card[0]);
+    }
+
+    public void applyLoan(double amount, String type, Branch branch) {
+        LoanApplication loanApp = new LoanApplication(amount, type, branch);
+        loanApplications.add(loanApp);
+        System.out.println("Loan application submitted: " + loanApp.getApplicationID());
+    }
+
+    public String getLoanApplicationStatus(LoanApplication loanApplication) {
+        if (loanApplications.contains(loanApplication)) {
+            return loanApplication.getStatus();
+        } else {
+            return "Loan application not found!";
+        }
+    }
+
+    public LoanAccount[] getLoanAccounts() {
+        return loanAccounts.toArray(new LoanAccount[0]);
     }
 
     public String getCIF() {
