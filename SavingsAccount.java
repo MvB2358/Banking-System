@@ -14,6 +14,7 @@ public class SavingsAccount extends Account {
         this.maxNoTransactions = maxNoTransactions;
         this.charge = 0.0;
         this.isViolating = false;
+        this.currentTransactions = 0;
     }
 
     public double calculateInterest() {
@@ -21,41 +22,58 @@ public class SavingsAccount extends Account {
         return balance * (interestRate / 100);
     }
 
-    public boolean withdraw(double amount){
-        // create and include a boolean variable
+    public boolean withdraw(double amount) {
+        boolean success = false; // Track if withdrawal is successful
         System.out.println("You have requested to withdraw: " + amount);
         if (balance - amount >= minBalance) {
             balance -= amount;
-        }
-        else{
+            success = true;
+            System.out.println("Withdrawal successful. New balance: " + balance);
+        } else {
             System.out.println("Insufficient balance to meet minimum balance requirements.");
         }
+        return success;
     }
 
-    public boolean deposit(double amount){
-        // create and include a boolean variable
+    public boolean deposit(double amount) {
+        boolean success = false; // Track if deposit is successful
         System.out.println("You have deposited: " + amount);
-        balance += amount;
+        if (amount > 0) {
+            balance += amount;
+            success = true;
+            System.out.println("Deposit successful. New balance: " + balance);
+        } else {
+            System.out.println("Deposit amount must be positive.");
+        }
+        return success;
     }
 
-    public double getBalance(){
+    public double getBalance() {
         return balance;
     }
 
-    public void handleTransaction(double amount){
-        // Include CurrentTransactions to check less than limit and do super.transaction()
-        if(amount > transactionLimit){
-            System.out.println("Transaction limit exceeded.");
+    public void handleTransaction(double amount) {
+        if (amount > transactionLimit) {
+            System.out.println("Transaction limit exceeded. Transaction denied.");
             isViolating = true;
+        } else if (currentTransactions >= maxNoTransactions) {
+            System.out.println("Maximum number of transactions exceeded. Transaction denied.");
+            isViolating = true;
+        } else {
+            currentTransactions++;
+            balance -= amount;  // Assuming transaction involves a deduction (e.g., purchase or withdrawal)
+            System.out.println("Transaction successful. New balance: " + balance);
+            isViolating = false;
         }
-        
-            System.out.println("Transaction successful.");   
-        
     }
 
-    public void imposeFine(){
+    public void imposeFine() {
         charge = 50.0; // Example fine amount
-        balance -= charge;
-        System.out.println("Fine imposed: " + charge);
+        if (isViolating) {
+            balance -= charge;
+            System.out.println("Fine imposed: " + charge);
+        } else {
+            System.out.println("No fine imposed as there was no violation.");
+        }
     }
 }
