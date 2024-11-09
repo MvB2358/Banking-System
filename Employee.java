@@ -129,9 +129,8 @@ public class Employee {
         this.branch = branch;
     }
 
-    public void verifyLoan(Loan loanApplication) {
-        boolean setStatus = true;
-        loanApplication.updateVerification(setStatus, this);
+    public void verifyLoan(Loan loanApplication, boolean value) {
+        loanApplication.updateVerification(value, this);
     }
 
     public void createCreditCard(Account account) {
