@@ -67,7 +67,7 @@ public class Transaction {
         transactionFee = calculateTransactionFees();
         boolean result = false;
 
-        if (sourceAccount.getBalance() >= (amount + transactionFee)) {
+        if (sourceAccount.getBalance() >= (amount + transactionFee)) {//by transaction type and set boolean for source account
             sourceAccount.withdraw(amount + transactionFee);
             result = true;
             transactionStatus = "Withdrawn";
