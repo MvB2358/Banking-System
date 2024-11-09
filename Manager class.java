@@ -1,49 +1,74 @@
-public class Manager extends Employee {
+import java.time.LocalDate;
+import java.text.DecimalFormat;
 
-    public Manager(String employeeId, String employeeName, Bank bank, Branch branch, 
-                   String designation, String department, double salary, 
-                   int phoneNumber, String email, Date joiningDate) {
-        super(employeeId, employeeName, bank, branch, designation, department, salary, phoneNumber, email, joiningDate);
+public class LoanApplication {
+    private static int applicationCounter = 1;
+    private String applicationId;
+    private Customer customer;
+    private double loanAmount;
+    private String loanType;
+    private String loanStatus;
+    private boolean verified;
+    private Employee verifiedBy;
+    private LocalDate applicationDate;
+    private LocalDate approvalDate;
+
+    public LoanApplication(Customer customer, double loanAmount, String loanType, LocalDate applicationDate) {
+        this.applicationId = generateApplicationId();
+        this.customer = customer;
+        this.loanAmount = loanAmount;
+        this.loanType = loanType;
+        this.applicationDate = applicationDate;
+        this.loanStatus = "Pending";
+        this.verified = false;
     }
 
-    public void approveLoan(LoanApplication application) {
-        if (application != null && !application.getLoanStatus().equalsIgnoreCase("Approved")) {
-            if (application.isVerified()) {
-                application.updateLoanStatus("Approved");
-                application.setVerifiedBy(this);
-                System.out.println("Loan application for " + application.getCustomer().getCustomerName() + " approved by " + getEmployeeName());
-            } else {
-                application.updateLoanStatus("Rejected");
-                System.out.println("Loan application for " + application.getCustomer().getCustomerName() + " rejected by " + getEmployeeName() + " as it is not verified.");
-            }
+    private String generateApplicationId() {
+        DecimalFormat idFormat = new DecimalFormat("0000000");
+        String id = idFormat.format(applicationCounter);
+        applicationCounter++;
+        return id;
+    }
+
+    public String getLoanStatus() {
+        return loanStatus;
+    }
+
+    public void getLoanDetails() {
+        System.out.println("Loan Application ID: " + applicationId);
+        System.out.println("Customer: " + customer.getCustomerName());
+        System.out.println("Loan Amount: " + loanAmount);
+        System.out.println("Loan Type: " + loanType);
+        System.out.println("Application Date: " + applicationDate);
+        System.out.println("Approval Date: " + (approvalDate != null ? approvalDate : "Not Approved"));
+        System.out.println("Status: " + loanStatus);
+        System.out.println("Verified: " + (verified ? "Yes" : "No"));
+        System.out.println("Verified By: " + (verifiedBy != null ? verifiedBy.getEmployeeName() : "Not Verified"));
+    }
+
+    public void updateLoanStatus(String status) {
+        this.loanStatus = status;
+        if ("Approved".equalsIgnoreCase(status)) {
+            this.approvalDate = LocalDate.now();
         } else {
-            System.out.println("Loan application is already approved or null.");
+            this.approvalDate = null;
         }
     }
 
-    public void generateEmployeeReport(Employee employee) {
-        if (employee != null) {
-            System.out.println("Employee Report for ID: " + employee.getEmployeeId());
-            System.out.println("Name: " + employee.getEmployeeName());
-            System.out.println("Designation: " + employee.getDesignation());
-            System.out.println("Department: " + employee.getDepartment());
-            System.out.println("Salary: " + employee.getSalary());
-        } else {
-            System.out.println("Invalid employee information.");
+    public void updateVerification(boolean bool) {
+        this.verified = bool;
+        if (!bool) {
+            this.verifiedBy = null;
         }
     }
 
-    public double getSalary() {
-        return super.getSalary();
+    public void setVerifiedBy(Employee employee) {
+        if (verified) {
+            this.verifiedBy = employee;
+        }
     }
 
-    public void provideBonus(Employee employee, double bonus) {
-        if (employee != null && bonus > 0) {
-            double updatedSalary = employee.getSalary() + bonus;
-            employee.updateSalary(updatedSalary);
-            System.out.println("Bonus of " + bonus + " provided to Employee ID: " + employee.getEmployeeId());
-        } else {
-            System.out.println("Invalid employee or bonus amount.");
-        }
+    public boolean isVerified() {
+        return verified;
     }
 }
