@@ -1,6 +1,8 @@
 import java.time.LocalDate;
+import java.text.DecimalFormat;
 
 public class LoanApplication {
+    private static int applicationCounter = 1;
     private String applicationId;
     private Customer customer;
     private double loanAmount;
@@ -11,14 +13,21 @@ public class LoanApplication {
     private LocalDate applicationDate;
     private LocalDate approvalDate;
 
-    public LoanApplication(String applicationId, Customer customer, double loanAmount, String loanType, LocalDate applicationDate) {
-        this.applicationId = applicationId;
+    public LoanApplication(Customer customer, double loanAmount, String loanType, LocalDate applicationDate) {
+        this.applicationId = generateApplicationId();
         this.customer = customer;
         this.loanAmount = loanAmount;
         this.loanType = loanType;
         this.applicationDate = applicationDate;
         this.loanStatus = "Pending";
         this.verified = false;
+    }
+
+    private String generateApplicationId() {
+        DecimalFormat idFormat = new DecimalFormat("0000000");
+        String id = idFormat.format(applicationCounter);
+        applicationCounter++;
+        return id;
     }
 
     public String getLoanStatus() {
@@ -57,5 +66,9 @@ public class LoanApplication {
         if (verified) {
             this.verifiedBy = employee;
         }
+    }
+
+    public boolean isVerified() {
+        return verified;
     }
 }
