@@ -5,7 +5,7 @@ class Customer {
     private String CIF;
     private String name;
     private String address;
-    private int phone_no;
+    private String phone_no;
     private List<Account> accounts;
     private List<Card> cards;
     private List<LoanApplication> loanApplications;
@@ -39,7 +39,7 @@ class Customer {
         }
     }
 
-    public Account[] getAccountDetails() {
+    public List<Account> getAccountDetails() {
         return accounts.toArray(new Account[0]);
     }
 
@@ -65,7 +65,7 @@ class Customer {
         }
     }
 
-    public Card[] getCardDetails() {
+    public List<Card> getCardDetails() {
         return cards.toArray(new Card[0]);
     }
 
@@ -83,7 +83,7 @@ class Customer {
         }
     }
 
-    public LoanAccount[] getLoanAccounts() {
+    public List<LoanAccount> getLoanAccounts() {
         return loanAccounts.toArray(new LoanAccount[0]);
     }
 
@@ -99,7 +99,7 @@ class Customer {
         return address;
     }
 
-    public int getPhoneNo() {
+    public String getPhoneNo() {
         return phone_no;
     }
 }
