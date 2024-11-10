@@ -69,8 +69,8 @@ class Customer {
         return cards.toArray(new Card[0]);
     }
 
-    public void applyLoan(double amount, String type, Branch branch) {
-        LoanApplication loanApp = new LoanApplication(amount, type, branch);
+    public void applyLoan(double amount, String type, LocalDate appDate) {
+        LoanApplication loanApp = new LoanApplication(amount, type, appDate);
         loanApplications.add(loanApp);
         System.out.println("Loan application submitted: " + loanApp.getApplicationID());
     }
