@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -5,20 +6,18 @@ class DebitCard extends Card {
     private Account account;
     private ArrayList<Transaction> transactions;
 
-
-    public DebitCard(int cardNumber, String name, int cvv, Date expiryDate, Account account) {
-        super(cardNumber, name, cvv, expiryDate, account);
+    public DebitCard(String cardNumber, String name, int cvv, Date expiryDate, Account account) {
+        super(cardNumber, name, cvv, expiryDate);
         this.account = account;
         this.transactions = new ArrayList<>();
     }
-
 
     @Override
     public void withdraw(double amount) {
         if (getStatus().equals("Active")) {
             if (amount > 0 && amount <= account.getBalance()) {
                 account.withdraw(amount);
-                transactions.add(new Transaction("Debit Withdrawal", amount));
+                transactions.add(new Transaction(account, null, "Debit Withdrawal"));
                 System.out.println("Withdrawn: " + amount);
             } else {
                 System.out.println("Insufficient balance for withdrawal.");
@@ -28,13 +27,12 @@ class DebitCard extends Card {
         }
     }
 
- 
     @Override
     public void deposit(double amount) {
         if (getStatus().equals("Active")) {
             if (amount > 0) {
                 account.deposit(amount);
-                transactions.add(new Transaction("Debit Deposit", amount));
+                transactions.add(new Transaction(null, account, "Debit Deposit", amount));
                 System.out.println("Deposited: " + amount);
             } else {
                 System.out.println("Deposit amount must be positive.");
@@ -44,9 +42,8 @@ class DebitCard extends Card {
         }
     }
 
-
-    public Transaction[] getTransactions() {
-        return transactions.toArray(new Transaction[0]);
+    public ArrayList<Transaction> getTransactions() {
+        return new ArrayList<>(transactions);
     }
 
     @Override
