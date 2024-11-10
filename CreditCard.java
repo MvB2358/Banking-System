@@ -8,8 +8,8 @@ class CreditCard extends Card {
     private ArrayList<Transaction> transactions;
 
     // Constructor
-    public CreditCard(int cardNumber, String name, int cvv, Date expiryDate, Account account, double withdrawLimit, double interest) {
-        super(cardNumber, name, cvv, expiryDate, account); 
+    public CreditCard(String cardNumber, String name, int cvv, Date expiryDate, double withdrawLimit, double interest) {
+        super(cardNumber, name, cvv, expiryDate); 
         this.withdrawLimit = withdrawLimit;
         this.interest = interest;
         this.amountWithdrawn = 0.0;
@@ -22,7 +22,6 @@ class CreditCard extends Card {
         if (getStatus().equals("Active")) {
             if (amountWithdrawn + amount <= withdrawLimit) {
                 amountWithdrawn += amount;
-                transactions.add(new Transaction("Credit Withdrawal", amount));
                 System.out.println("Withdrawn: " + amount + ". Total withdrawn: " + amountWithdrawn);
             } else {
                 System.out.println("Withdrawal denied. Exceeds credit limit.");
@@ -32,17 +31,14 @@ class CreditCard extends Card {
         }
     }
 
-
     public void payCredit(double amount, int days) {
         double interestAmount = amount * (interest / 100) * (days / 365.0); // Simple interest calculation
         double totalPayment = amount + interestAmount;
-        amountWithdrawn -= amount; // Reduce the outstanding credit balance
-        transactions.add(new Transaction("Credit Payment", totalPayment));
+        amountWithdrawn -= amount; 
         System.out.println("Credit of " + amount + " paid with interest of " + interestAmount + 
                            ". Total payment: " + totalPayment);
     }
 
-  
     @Override
     public String getCardDetails() {
         return super.getCardDetails() + 
@@ -51,9 +47,9 @@ class CreditCard extends Card {
                "\nTotal Amount Withdrawn: " + amountWithdrawn;
     }
 
-    // Getter for transactions history
-    public Transaction[] getTransactions() {
-        return transactions.toArray(new Transaction[0]);
+    // Getter for transaction history
+    public ArrayList<Transaction> getTransactions() {
+        return new ArrayList<>(transactions);
     }
 
     // Additional getters if needed
