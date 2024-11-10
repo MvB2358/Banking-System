@@ -18,7 +18,7 @@ public class TransactionController {
         Account destinationAccount = findAccountById(accountId);
         if (destinationAccount != null) {
             // Create a new Deposit transaction
-            Transaction depositTransaction = new Transaction("T" + System.currentTimeMillis(),
+            Transaction depositTransaction = new Transaction(
                     null, destinationAccount, "Deposit", amount, LocalDateTime.now());
             boolean isSuccess = depositTransaction.processTransaction();
             depositTransaction.getTransactionDetails();  // Display transaction details in logs
@@ -39,8 +39,7 @@ public class TransactionController {
         Account sourceAccount = findAccountById(accountId);
         if (sourceAccount != null) {
             // Create a new Withdraw transaction
-            Transaction withdrawTransaction = new Transaction("T" + System.currentTimeMillis(),
-                    sourceAccount, null, "Withdraw", amount, LocalDateTime.now());
+            Transaction withdrawTransaction = new Transaction(sourceAccount, null, "Withdraw", amount, LocalDateTime.now());
             boolean isSuccess = withdrawTransaction.processTransaction();
             withdrawTransaction.getTransactionDetails();  // Display transaction details in logs
 
@@ -62,8 +61,7 @@ public class TransactionController {
 
         if (sourceAccount != null && destinationAccount != null) {
             // Create a new Transfer transaction
-            Transaction transferTransaction = new Transaction("T" + System.currentTimeMillis(),
-                    sourceAccount, destinationAccount, "Transfer", amount, LocalDateTime.now());
+            Transaction transferTransaction = new Transaction(sourceAccount, destinationAccount, "Transfer", amount, LocalDateTime.now());
             boolean isSuccess = transferTransaction.processTransaction();
             transferTransaction.getTransactionDetails();  // Display transaction details in logs
 
