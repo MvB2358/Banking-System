@@ -12,7 +12,7 @@ class Account {
     private ArrayList<LoanAccount> loanAccounts;
     private ArrayList<Transaction> transactions;
 
-    // Constructor
+
     public Account(Customer accountHolder, Branch branch) {
         this.accountHolder = accountHolder;
         this.accountNumber = generateAccountNumber();
@@ -24,7 +24,7 @@ class Account {
         this.transactions = new ArrayList<>();
     }
 
-    // Generates a unique account number
+
     private synchronized String generateAccountNumber() {
         return String.valueOf(accountCounter++);
     }
