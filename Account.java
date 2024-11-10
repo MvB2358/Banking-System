@@ -1,8 +1,10 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 class Account {
+    private static int accountCounter = 100000;
     private Customer accountHolder;
-    private int accountNumber;
+    private String accountNumber;
     private double balance;
     private Branch branch;
     private ArrayList<FixedDeposit> fixedDeposits;
@@ -11,15 +13,20 @@ class Account {
     private ArrayList<Transaction> transactions;
 
     // Constructor
-    public Account(Customer accountHolder, int accountNumber, Branch branch) {
+    public Account(Customer accountHolder, Branch branch) {
         this.accountHolder = accountHolder;
-        this.accountNumber = accountNumber;
-        this.balance = 0.0; // Initial balance
+        this.accountNumber = generateAccountNumber();
+        this.balance = 0.0;
         this.branch = branch;
-        this.fixedDeposits = new FixedDeposit[] ;
-        this.recurringDeposits = new ReadableDeposit[] ;
-        this.loanAccounts = new LoanAccount[];
-        this.transactions = new Transactttions[];
+        this.fixedDeposits = new ArrayList<>();
+        this.recurringDeposits = new ArrayList<>();
+        this.loanAccounts = new ArrayList<>();
+        this.transactions = new ArrayList<>();
+    }
+
+    // Generates a unique account number
+    private synchronized String generateAccountNumber() {
+        return String.valueOf(accountCounter++);
     }
 
     public double getBalance() {
@@ -33,7 +40,7 @@ class Account {
                "\nBranch: " + branch.getBranchName();
     }
 
-    public int getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
@@ -48,7 +55,6 @@ class Account {
     public boolean withdraw(double amount) {
         if (amount <= balance && amount > 0) {
             balance -= amount;
-            transactions.add(new Transaction("Withdrawal", amount));
             return true;
         }
         return false;
@@ -57,34 +63,25 @@ class Account {
     public boolean deposit(double amount) {
         if (amount > 0) {
             balance += amount;
-            transactions.add(new Transaction("Deposit", amount));
             return true;
         }
         return false;
     }
+    
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
+    }
 
     public void closeFD(FixedDeposit FD) {
         if (fixedDeposits.remove(FD)) {
-            // Additional logic to transfer funds or notify the customer
             System.out.println("Fixed Deposit closed.");
         }
     }
 
-    public void prematureFD(FixedDeposit FD) {
-        // Logic for handling premature closure of fixed deposits
-        System.out.println("Fixed Deposit closed prematurely.");
-    }
-
     public void closeRD(RecurringDeposit RD) {
         if (recurringDeposits.remove(RD)) {
-            // Logic for closing recurring deposits
             System.out.println("Recurring Deposit closed.");
         }
-    }
-
-    public void prematureRD(RecurringDeposit RD) {
-        // Logic for handling premature closure of recurring deposits
-        System.out.println("Recurring Deposit closed prematurely.");
     }
 
     public void addFD(FixedDeposit FD) {
@@ -97,11 +94,6 @@ class Account {
         System.out.println("Recurring Deposit added.");
     }
 
-    public void depositRD(RecurringDeposit RD,int amount) {
-        RD.balance = RD.balance + amount;
-        System.out.println("Deposited Amount succesfully")
-    }
-
     public void addLoanAccount(LoanAccount LA) {
         loanAccounts.add(LA);
         System.out.println("Loan Account added.");
@@ -112,20 +104,7 @@ class Account {
         System.out.println("Loan Account removed.");
     }
 
-    public void repayLoan(LoanAccount LA) {
-        System.out.println("Loan repaid.");
-    }
-
-    public Transaction[] getTransactions() {
-        return transactions.toArray(new Transaction[0]);
-    }
-
-    public void handleTransaction(Transaction transaction) {
-      
-        if (transaction.getType().equals("Deposit")) {
-            deposit(transaction.getAmount());
-        } else if (transaction.getType().equals("Withdrawal")) {
-            withdraw(transaction.getAmount());
-        }
+    public ArrayList<Transaction> getTransactions() {
+        return new ArrayList<>(transactions);
     }
 }
