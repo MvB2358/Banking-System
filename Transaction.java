@@ -1,6 +1,8 @@
 import java.time.LocalDateTime;
 
 public class Transaction {
+    private static int transactionCounter = 0;
+    
     private String transactionId;
     private Account sourceAccount;
     private Account destinationAccount;
@@ -11,8 +13,8 @@ public class Transaction {
     private double transactionFee;
     private String failureReason;
 
-    public Transaction(String transactionId, Account sourceAccount, Account destinationAccount, String transactionType, double amount, LocalDateTime transactionDate) {
-        this.transactionId = transactionId;
+    public Transaction(Account sourceAccount, Account destinationAccount, String transactionType, double amount, LocalDateTime transactionDate) {
+        this.transactionId = generateTransactionId();
         this.sourceAccount = sourceAccount;
         this.destinationAccount = destinationAccount;
         this.transactionType = transactionType;
@@ -21,10 +23,15 @@ public class Transaction {
         this.transactionStatus = "Pending";
     }
 
+    private String generateTransactionId() {
+        transactionCounter++;
+        return String.format("%09d", transactionCounter);
+    }
+
     public void getTransactionDetails() {
         System.out.println("Transaction ID: " + transactionId);
-        System.out.println("Source Account: " + (sourceAccount != null ? sourceAccount.getAccountId() : "N/A"));
-        System.out.println("Destination Account: " + (destinationAccount != null ? destinationAccount.getAccountId() : "N/A"));
+        System.out.println("Source Account: " + (sourceAccount != null ? sourceAccount.getAccountNumber() : "N/A"));
+        System.out.println("Destination Account: " + (destinationAccount != null ? destinationAccount.getAccountNumber() : "N/A"));
         System.out.println("Type: " + transactionType);
         System.out.println("Amount: " + amount);
         System.out.println("Date: " + transactionDate);
@@ -49,17 +56,6 @@ public class Transaction {
                 break;
         }
         return transactionFee;
-    }
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public Account getSourceAccount() {
-        return sourceAccount;
-    }
-
-    public Account getDestinationAccount() {
-        return destinationAccount;
     }
 
     public boolean processTransaction() {
@@ -110,5 +106,21 @@ public class Transaction {
         }
 
         return "Completed".equals(transactionStatus);
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public Account getSourceAccount() {
+        return sourceAccount;
+    }
+
+    public Account getDestinationAccount() {
+        return destinationAccount;
     }
 }
