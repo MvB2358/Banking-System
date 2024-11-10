@@ -1,29 +1,23 @@
 class FixedDeposit{
-	private int fdID = 0;
+	private String fdID;
 	private static nextID = 1;
 	private double principalAmount;
-	private int tenure;
+	private LocalDate maturityDate;
+	private LocalDate startDate;
 	private double interest;
 	private double penalty;
 	private double maturityAmount;
-	private int remainingTenure;
 	private String status;
-	FixedDeposit(double amount, int tenure, double penalty, double interest){
-		fdID = nextID++;
+	FixedDeposit(double amount, int months, double penalty, double interest){
+		fdID = "FD" + String.format("%09d",nextID++);
 		principalAmount = amount;
-		this.tenure = tenure;
+		this.maturityDate = LocalDate.now().plusMonths(months);
+		this.startDate = LocalDate.now();
 		this.penalty = penalty;
 		this.interest = interest;
-		status = "open";
-		remainingTenure = tenure;
-	}
-	void calculateMaturityAmount(){
-		if (status.equals("open")){
-			maturityAmount = principalAmount + (principalAmount * interest / 100);
-		}
-		else{
-			System.out.println("Fixed Deposit " + this.fdID + " has been closed");
-		}
+		int monthsBetween = (int) ChronoUnit.MONTHS.between(startDate, maturityDate);
+		maturityAmount = principalAmount + (principalAmount * interest * monthsBetween / 100);
+		this.status = "open";
 	}
 	double getMaturityAmount(){
 		if (status.equals("open")){
@@ -34,16 +28,22 @@ class FixedDeposit{
 			return 0;
 		}
 	}
-	double withdrawPrematurely(){
+	void withdrawFD(Account){
 		if(status.equal("open")){
-			maturityAmount -= (maturityAmount * penalty / 100);
-			status = "close";
-			remainingTenure = 0;
-			return maturityAmount;
+			LocalDate currentDate = LocalDate.now();
+			if(currentDate.isAfter(maturityDate) || currentDate.isEqual(maturityDate)){
+				Account.deposit(maturityAmount);
+			}
+			else{
+				int monthsBetween = (int) ChronoUnit.MONTHS.between(startDate, currentDate);
+				maturityAmount = (principalAmount * interest * monthsBetween/ 100);
+				maturityAmount -= (maturity * penalty / 100);
+				Account.deposit(maturityAmount);
+				status = "close";
+			}
 		}
 		else{
 			System.out.println("Fixed Deposit " + this.fdID + " has been closed");
-			return 0;
 		}
 	}
 	void updateStatus(String status){
@@ -67,9 +67,9 @@ class FixedDeposit{
 			System.out.println("Fixed Deposit " + this.fdID + " has been closed");
 		}
 	}
-	void increaseTenure(int tenure){
+	void increaseTenure(int months){
 		if(status.equal("open")){
-			this.tenure = tenure;
+			this.maturityDate = maturityDate.plusMonths(months);
 		}
 		else{
 			System.out.println("Fixed Deposit " + this.fdID + " has been closed");
