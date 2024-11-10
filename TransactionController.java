@@ -1,86 +1,131 @@
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
 
-    private final Branch branch;  // Assume the Branch is already initialized with employees, customers, accounts
+    private final Branch branch;
 
     public TransactionController(Branch branch) {
         this.branch = branch;
     }
 
-    // Handle Deposit transactions
+    // Page to select transaction type (Deposit, Withdraw, Transfer)
+    @GetMapping("/types")
+    public String showTransactionTypes() {
+        return "transactionTypePage"; // Returns transactionTypePage.html
+    }
+
+    // Handle Deposit transaction
     @PostMapping("/deposit")
-    public ResponseEntity<String> handleDeposit(@RequestParam String accountId, @RequestParam double amount) {
+    public String handleDeposit(@RequestParam String accountId, @RequestParam double amount, Model model) {
         Account destinationAccount = findAccountById(accountId);
-        if (destinationAccount != null) {
-            // Create a new Deposit transaction
-            Transaction depositTransaction = new Transaction(
-                    null, destinationAccount, "Deposit", amount, LocalDateTime.now());
-            boolean isSuccess = depositTransaction.processTransaction();
-            depositTransaction.getTransactionDetails();  // Display transaction details in logs
+        if (destinationAccount == null) {
+            return "error";  // Error page if account not found
+        }
 
-            if (isSuccess) {
-                return ResponseEntity.ok("Deposit successful!");
-            } else {
-                return ResponseEntity.status(400).body("Deposit failed: " + depositTransaction.getFailureReason());
-            }
+        // Create a new Deposit transaction
+        Transaction depositTransaction = new Transaction(null, destinationAccount, "Deposit", amount);
+        boolean isSuccess = depositTransaction.processTransaction();
+
+        // Add transaction details to the model
+        model.addAttribute("transactionDetails", depositTransaction.getTransactionDetails());
+
+        if (isSuccess) {
+            return "transactionDetails"; // Returns transactionDetails.html for successful transaction
         } else {
-            return ResponseEntity.status(404).body("Account not found.");
+            model.addAttribute("error", "Deposit failed: " + depositTransaction.getFailureReason());
+            return "error"; // Returns an error page if transaction failed
         }
     }
 
-    // Handle Withdraw transactions
+    // Handle Withdraw transaction
     @PostMapping("/withdraw")
-    public ResponseEntity<String> handleWithdraw(@RequestParam String accountId, @RequestParam double amount) {
+    public String handleWithdraw(@RequestParam String accountId, @RequestParam double amount, Model model) {
         Account sourceAccount = findAccountById(accountId);
-        if (sourceAccount != null) {
-            // Create a new Withdraw transaction
-            Transaction withdrawTransaction = new Transaction(sourceAccount, null, "Withdraw", amount, LocalDateTime.now());
-            boolean isSuccess = withdrawTransaction.processTransaction();
-            withdrawTransaction.getTransactionDetails();  // Display transaction details in logs
+        if (sourceAccount == null) {
+            return "error";  // Error page if account not found
+        }
 
-            if (isSuccess) {
-                return ResponseEntity.ok("Withdrawal successful!");
-            } else {
-                return ResponseEntity.status(400).body("Withdrawal failed: " + withdrawTransaction.getFailureReason());
-            }
+        // Create a new Withdraw transaction
+        Transaction withdrawTransaction = new Transaction(sourceAccount, null, "Withdraw", amount);
+        boolean isSuccess = withdrawTransaction.processTransaction();
+
+        // Add transaction details to the model
+        model.addAttribute("transactionDetails", withdrawTransaction.getTransactionDetails());
+
+        if (isSuccess) {
+            return "transactionDetails"; // Returns transactionDetails.html for successful transaction
         } else {
-            return ResponseEntity.status(404).body("Account not found.");
+            model.addAttribute("error", "Withdrawal failed: " + withdrawTransaction.getFailureReason());
+            return "error"; // Returns an error page if transaction failed
         }
     }
 
-    // Handle Transfer transactions
+    // Handle Transfer transaction
     @PostMapping("/transfer")
-    public ResponseEntity<String> handleTransfer(@RequestParam String sourceAccountId, @RequestParam String destinationAccountId, @RequestParam double amount) {
+    public String handleTransfer(@RequestParam String sourceAccountId, @RequestParam String destinationAccountId, @RequestParam double amount, Model model) {
         Account sourceAccount = findAccountById(sourceAccountId);
         Account destinationAccount = findAccountById(destinationAccountId);
 
-        if (sourceAccount != null && destinationAccount != null) {
-            // Create a new Transfer transaction
-            Transaction transferTransaction = new Transaction(sourceAccount, destinationAccount, "Transfer", amount, LocalDateTime.now());
-            boolean isSuccess = transferTransaction.processTransaction();
-            transferTransaction.getTransactionDetails();  // Display transaction details in logs
+        if (sourceAccount == null || destinationAccount == null) {
+            return "error";  // Error page if account not found
+        }
 
-            if (isSuccess) {
-                return ResponseEntity.ok("Transfer successful!");
-            } else {
-                return ResponseEntity.status(400).body("Transfer failed: " + transferTransaction.getFailureReason());
-            }
+        // Create a new Transfer transaction
+        Transaction transferTransaction = new Transaction(sourceAccount, destinationAccount, "Transfer", amount);
+        boolean isSuccess = transferTransaction.processTransaction();
+
+        // Add transaction details to the model
+        model.addAttribute("transactionDetails", transferTransaction.getTransactionDetails());
+
+        if (isSuccess) {
+            return "transactionDetails"; // Returns transactionDetails.html for successful transaction
         } else {
-            return ResponseEntity.status(404).body("Account(s) not found.");
+            model.addAttribute("error", "Transfer failed: " + transferTransaction.getFailureReason());
+            return "error"; // Returns an error page if transaction failed
         }
     }
 
     // Helper method to find Account by ID
     private Account findAccountById(String accountId) {
-        // Assume the Branch has a method to get all accounts
-        return branch.getAccounts().stream()
-                .filter(acc -> acc.getAccountNumber() == Integer.parseInt(accountId))
-                .findFirst()
-                .orElse(null);
+        try {
+            int accId = Integer.parseInt(accountId);
+            return branch.getAccounts().stream()
+                    .filter(acc -> acc.getAccountNumber() == accId)
+                    .findFirst()
+                    .orElse(null);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    // Get Transaction details (Page to view a specific transaction's details)
+    @GetMapping("/details/{transactionId}")
+    public String getTransactionDetails(@PathVariable String transactionId, Model model) {
+        // Find the transaction by transaction ID
+        Transaction transaction = findTransactionById(transactionId);
+        if (transaction == null) {
+            model.addAttribute("error", "Transaction not found.");
+            return "error"; // Returns error page if transaction not found
+        }
+
+        // Add transaction details to the model
+        model.addAttribute("transactionDetails", transaction.getTransactionDetails());
+
+        // Return transaction details page
+        return "transactionDetails"; // Returns transactionDetails.html for displaying transaction details
+    }
+
+    // Helper method to find Transaction by ID (this can be adapted to your system)
+    private Transaction findTransactionById(String transactionId) {
+        // This is just a placeholder method. In a real-world application, 
+        // this would query a database or service to retrieve the transaction by its ID.
+        // For now, assuming you can retrieve it based on the ID from some source.
+        return branch.getTransactions().stream()
+                     .filter(t -> t.getTransactionId().equals(transactionId))
+                     .findFirst()
+                     .orElse(null);
     }
 }
