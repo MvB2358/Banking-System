@@ -40,7 +40,7 @@ class Customer {
     }
 
     public List<Account> getAccountDetails() {
-        return accounts.toArray(new Account[0]);
+        return accounts
     }
 
     public void addDebitCard(Account account) {
