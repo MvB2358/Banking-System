@@ -129,36 +129,38 @@ public class Employee {
         this.branch = branch;
     }
 
-    public void verifyLoan(Loan loanApplication, boolean value) {
-        loanApplication.updateVerification(value, this);
+    public void verifyLoan(Loan loanApplication) {
+        boolean setStatus = true;
+        loanApplication.updateVerification(setStatus, this);
     }
 
-    public void createCreditCard(Account account) {
+    public void createCreditCard(Account account, String name) {
         String cardNumber = String.format("%04d %04d %04d %04d", (this.card_number / 100000000) % 10000, (this.card_number / 10000) % 10000, (this.card_number / 100) % 10000, this.card_number % 10000);
         this.card_number++;
 
-        String name = "JOHN DOE";
+        String holder_name = name.toUpperCase();
         int cvv = 333;
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2030, Calendar.DECEMBER, 31);
+        calendar.add(Calendar.YEAR, 4);
         Date expiryDate = calendar.getTime();
         double withdrawLimit = 50000.50;
         double interest = 2;
 
-        CreditCard card = new CreditCard(cardNumber, name, cvv, expiryDate, account, withdrawLimit, interest);
+        CreditCard card = new CreditCard(cardNumber, holder_name, cvv, expiryDate, account, withdrawLimit, interest);
         System.out.println("Generate Credit card number " + cardNumber + " for account " + account.getAccountNumber());
     }
 
-    public void openAccount(Customer customer, String type) {
+    public void openAccount(Customer customer, String type, Branch branch, double amount, double salary) {
         if (type.equals("Savings")) {
             double minBalance = 1000;
-            double transactionLimit = 50000;
-            int maxNoTransactions = 1000000;
+            double transactionLimit = 50000.00;
+            int maxNoTransactions = 150;
 
             SavingsAccount savingsAccount = new SavingsAccount(minBalance, transactionLimit, maxNoTransactions);
             System.out.println(type + " Account opened for Customer: " + customer.getName() + " with account number " + savingsAccount.getAccountNumber());
         } else {
-            // Current account
+            CurrentAccount currentAccount = new CurrentAccount(customer, branch, amount, salary);
+            System.out.println(type + " Account opened for Customer: " + customer.getName());
         }
     }
 
