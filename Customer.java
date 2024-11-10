@@ -2,6 +2,7 @@ import java.util.List;
 
 class Customer {
     private String CIF;
+    private static long nextID = 1;
     private String name;
     private String address;
     private String phone_no;
@@ -10,8 +11,8 @@ class Customer {
     private List<LoanApplication> loanApplications;
     private List<LoanAccount> loanAccounts;
 
-    public Customer(String CIF, String name, String address, int phone_no) {
-        this.CIF = CIF;
+    public Customer(String name, String address, int phone_no) {
+        CIF  = "CIF" + String.format("%09d", nextID++);
         this.name = name;
         this.address = address;
         this.phone_no = phone_no;
