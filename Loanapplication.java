@@ -34,7 +34,7 @@ public class LoanApplication {
 
     public void getLoanDetails() {
         System.out.println("Loan Application ID: " + applicationId);
-        System.out.println("Customer: " + customer.getCustomerName());
+        System.out.println("Customer: " + customer.getName());
         System.out.println("Loan Amount: " + loanAmount);
         System.out.println("Loan Type: " + loanType);
         System.out.println("Application Date: " + applicationDate);
