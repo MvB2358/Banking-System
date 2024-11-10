@@ -1,4 +1,5 @@
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.LocalDate;
 
 public class Transaction {
     private static int transactionCounter = 0;
@@ -8,18 +9,21 @@ public class Transaction {
     private Account destinationAccount;
     private String transactionType;
     private double amount;
-    private LocalDateTime transactionDate;
+    private LocalDate transactionDate;
     private String transactionStatus;
     private double transactionFee;
     private String failureReason;
+    private LocalTime transactionTime;
 
-    public Transaction(Account sourceAccount, Account destinationAccount, String transactionType, double amount, LocalDateTime transactionDate) {
+
+    public Transaction(Account sourceAccount, Account destinationAccount, String transactionType, double amount) {
         this.transactionId = generateTransactionId();
         this.sourceAccount = sourceAccount;
         this.destinationAccount = destinationAccount;
         this.transactionType = transactionType;
         this.amount = amount;
-        this.transactionDate = transactionDate;
+        this.transactionDate = LocalDate.now();
+        this.transactionTime = LocalTime.now()
         this.transactionStatus = "Pending";
     }
 
