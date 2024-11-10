@@ -1,19 +1,20 @@
 import java.util.Date;
 
 class Card {
-    private int cardNumber;
+    private String cardNumber;
     private String name;
     private int cvv;
     private Date expiryDate;
     private String status;
 
  
-    public Card(int cardNumber, String name, int cvv, Date expiryDate) {
+    public Card(String cardNumber, String name, int cvv, Date expiryDate) {
         this.cardNumber = cardNumber;
         this.name = name;
         this.cvv = cvv;
         this.expiryDate = expiryDate;
-        this.status = "Active"; // Default status is "Active"
+        this.status = "Inactive"; 
+        
     }
 
     
@@ -26,6 +27,11 @@ class Card {
     public void unblockCard() {
         status = "Active";
         System.out.println("Card has been unblocked.");
+    }
+
+    public void activateCard() {
+        status = "Active";
+        System.out.println("Card has been activated.");
     }
 
 
@@ -56,8 +62,8 @@ class Card {
         }
     }
 
-    // Getters for the attributes (if needed)
-    public int getCardNumber() {
+
+    public String getCardNumber() {
         return cardNumber;
     }
 
