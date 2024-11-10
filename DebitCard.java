@@ -1,4 +1,3 @@
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,9 +14,12 @@ class DebitCard extends Card {
     @Override
     public void withdraw(double amount) {
         if (getStatus().equals("Active")) {
-            if (amount > 0 && amount <= account.getBalance()) {
+            if (amount > 0) {
                 account.withdraw(amount);
-                transactions.add(new Transaction(account, null, "Debit Withdrawal"));
+
+                transactions.add(new Transaction(account, null, "Withdrawal",amount));
+                account.addTransaction(new Transaction(account, null, "Withdrawal",amount));
+
                 System.out.println("Withdrawn: " + amount);
             } else {
                 System.out.println("Insufficient balance for withdrawal.");
@@ -32,7 +34,8 @@ class DebitCard extends Card {
         if (getStatus().equals("Active")) {
             if (amount > 0) {
                 account.deposit(amount);
-                transactions.add(new Transaction(null, account, "Debit Deposit", amount));
+                transactions.add(new Transaction(null, account, "Deposit", amount));
+                account.addTransaction(new Transaction(null, account, "Deposit", amount));
                 System.out.println("Deposited: " + amount);
             } else {
                 System.out.println("Deposit amount must be positive.");
