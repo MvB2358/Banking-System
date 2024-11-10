@@ -70,6 +70,8 @@ public class Transaction {
                 if (destinationAccount != null) {
                     destinationAccount.deposit(amount);
                     transactionStatus = "Completed";
+                    destinationAccount.addTransaction(this);
+                    
                 } else {
                     transactionStatus = "Failed";
                     failureReason = "Destination Account Not Specified";
@@ -80,6 +82,7 @@ public class Transaction {
                 if (sourceAccount != null) {
                     sourceAccount.withdraw(amount + transactionFee);
                     transactionStatus = "Completed";
+                    sourceAccount.addTransaction(this);
                 } else {
                     transactionStatus = "Failed";
                     failureReason = "Source Account Not Specified";
@@ -92,6 +95,8 @@ public class Transaction {
                     if (withdrawSuccess) {
                         destinationAccount.deposit(amount);
                         transactionStatus = "Completed";
+                        sourceAccount.addTransaction(this);
+                        destinationAccount.addTransaction(this);
                     } else {
                         transactionStatus = "Failed";
                         failureReason = "Insufficient Funds in Source Account";
