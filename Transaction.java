@@ -23,7 +23,7 @@ public class Transaction {
         this.transactionType = transactionType;
         this.amount = amount;
         this.transactionDate = LocalDate.now();
-        this.transactionTime = LocalTime.now()
+        this.transactionTime = LocalTime.now();
         this.transactionStatus = "Pending";
     }
 
