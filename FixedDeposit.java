@@ -1,6 +1,6 @@
 class FixedDeposit{
 	private String fdID;
-	private static nextID = 1;
+	private static long nextID = 1;
 	private double principalAmount;
 	private LocalDate maturityDate;
 	private LocalDate startDate;
