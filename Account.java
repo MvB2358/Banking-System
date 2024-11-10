@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-class Account {
+abstract class Account {
     private static int accountCounter = 100000;
     private Customer accountHolder;
     private String accountNumber;
