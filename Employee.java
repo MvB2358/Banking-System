@@ -3,6 +3,7 @@ import java.util.Date;
 import java.util.regex.*;
 import java.util.Scanner;
 public class Employee {
+    private static long nextID = 1;
     private String employeeId;
     private String employeeName;
     private String designation;
@@ -17,9 +18,9 @@ public class Employee {
 
     private int card_number = 1;
 
-    public Employee(String employeeId, String employeeName, Bank bank, Branch branch, String designation,
+    public Employee(String employeeName, Bank bank, Branch branch, String designation,
             String department, double salary, long phoneNumber, String email, Date joiningDate) {
-        this.employeeId = employeeId;
+        this.employeeId = "E" + String.format("%09d", nextID++);
         this.employeeName = employeeName;
         this.bank = bank;
         this.branch = branch;
