@@ -23,8 +23,8 @@ public class Transaction {
 
     public void getTransactionDetails() {
         System.out.println("Transaction ID: " + transactionId);
-        System.out.println("Source Account: " + sourceAccount.getAccountId());
-        System.out.println("Destination Account: " + destinationAccount.getAccountId());
+        System.out.println("Source Account: " + (sourceAccount != null ? sourceAccount.getAccountId() : "N/A"));
+        System.out.println("Destination Account: " + (destinationAccount != null ? destinationAccount.getAccountId() : "N/A"));
         System.out.println("Type: " + transactionType);
         System.out.println("Amount: " + amount);
         System.out.println("Date: " + transactionDate);
@@ -50,7 +50,6 @@ public class Transaction {
         }
         return transactionFee;
     }
-
     public String getTransactionType() {
         return transactionType;
     }
@@ -65,26 +64,51 @@ public class Transaction {
 
     public boolean processTransaction() {
         transactionFee = calculateTransactionFees();
-        boolean result = false;
 
-        if (sourceAccount.getBalance() >= (amount + transactionFee)) {//by transaction type and set boolean for source account
-            sourceAccount.withdraw(amount + transactionFee);
-            result = true;
-            transactionStatus = "Withdrawn";
+        switch (transactionType) {
+            case "Deposit":
+                if (destinationAccount != null) {
+                    destinationAccount.deposit(amount);
+                    transactionStatus = "Completed";
+                } else {
+                    transactionStatus = "Failed";
+                    failureReason = "Destination Account Not Specified";
+                }
+                break;
 
-            if (destinationAccount != null) {
-                destinationAccount.deposit(amount);
-                transactionStatus = "Completed";
-            } else {
+            case "Withdraw":
+                if (sourceAccount != null) {
+                    sourceAccount.withdraw(amount + transactionFee);
+                    transactionStatus = "Completed";
+                } else {
+                    transactionStatus = "Failed";
+                    failureReason = "Source Account Not Specified";
+                }
+                break;
+
+            case "Transfer":
+                if (sourceAccount != null && destinationAccount != null) {
+                    boolean withdrawSuccess = sourceAccount.withdraw(amount + transactionFee);
+                    if (withdrawSuccess) {
+                        destinationAccount.deposit(amount);
+                        transactionStatus = "Completed";
+                    } else {
+                        transactionStatus = "Failed";
+                        failureReason = "Insufficient Funds in Source Account";
+                    }
+                } else {
+                    transactionStatus = "Failed";
+                    failureReason = sourceAccount == null ? "Source Account Not Specified" :
+                                   destinationAccount == null ? "Destination Account Not Specified" : "Unknown Error";
+                }
+                break;
+
+            default:
                 transactionStatus = "Failed";
-                failureReason = "Destination Account Not Specified";
-                result = false;
-            }
-        } else {
-            transactionStatus = "Failed";
-            failureReason = "Insufficient Funds";
+                failureReason = "Invalid Transaction Type";
+                break;
         }
 
-        return result;
+        return "Completed".equals(transactionStatus);
     }
 }
