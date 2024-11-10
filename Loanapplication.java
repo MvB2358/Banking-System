@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.text.DecimalFormat;
 
 public class LoanApplication {
     private static int applicationCounter = 1;
@@ -24,10 +23,9 @@ public class LoanApplication {
     }
 
     private String generateApplicationId() {
-        DecimalFormat idFormat = new DecimalFormat("0000000");
-        String id = idFormat.format(applicationCounter);
+        String id = String.format("%09d", applicationCounter);
         applicationCounter++;
-        return id;
+        return "LAP" + id;
     }
 
     public String getLoanStatus() {
