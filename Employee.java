@@ -1,7 +1,7 @@
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.*;
-
+import java.util.Scanner;
 public class Employee {
     private String employeeId;
     private String employeeName;
@@ -130,7 +130,14 @@ public class Employee {
     }
 
     public void verifyLoan(Loan loanApplication) {
-        boolean setStatus = true;
+        loanApplication.getLoanDetails();
+        Scanner s = new Scanner(System.in);
+        System.out.println("Do you want to verify the Loan Application?\nPress 1 for yes\tPress 0 for no");
+        int input = s.nextInt();
+        boolean setStatus;
+        if(i == 1) setStatus = true;
+        else if (i == 0) setStatus = false;
+        else System.out.println("Invalid input. Please Try again.");
         loanApplication.updateVerification(setStatus, this);
     }
 
