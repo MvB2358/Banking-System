@@ -16,10 +16,10 @@ class Customer {
         this.name = name;
         this.address = address;
         this.phone_no = phone_no;
-        this.accounts = new ArrayList<>();
-        this.cards = new ArrayList<>();
-        this.loanApplications = new ArrayList<>();
-        this.loanAccounts = new ArrayList<>();
+        this.accounts = new List<Account>();
+        this.cards = new List<Card>();
+        this.loanApplications = new List<LoanApplication>();
+        this.loanAccounts = new List<LoanAccount>();
     }
 
     public void addAccount(Account account) {
